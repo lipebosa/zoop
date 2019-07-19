@@ -73,9 +73,9 @@ class APIResource
      *
      * @throws ZoopException
      */
-    public function fileAPI($api, $files)
+    public function fileAPI($api, $files, $apiVersion = null)
     {
-        $url = $this->zoopBase->getUrl() . $this->zoopBase->getMarketplaceId() . '/' . $api;
+        $url = $this->zoopBase->getUrl($apiVersion) . $this->zoopBase->getMarketplaceId() . '/' . $api;
         $mimeTypes = [
             'application/pdf',
             'image/jpeg',
@@ -131,9 +131,9 @@ class APIResource
      *
      * @throws ZoopException
      */
-    public function searchAPI($api)
+    public function searchAPI($api, $apiVersion = null)
     {
-        $url = $this->zoopBase->getUrl() . $this->zoopBase->getMarketplaceId() . '/' . $api;
+        $url = $this->zoopBase->getUrl($apiVersion) . $this->zoopBase->getMarketplaceId() . '/' . $api;
         try {
             return $this->APIRequest->request('GET', $url, $this->zoopBase->getHeaders());
         } catch (ZoopException $e) {
@@ -150,9 +150,9 @@ class APIResource
      *
      * @throws ZoopException
      */
-    public function deleteAPI($api)
+    public function deleteAPI($api, $apiVersion = null)
     {
-        $url = $this->zoopBase->getUrl() . $this->zoopBase->getMarketplaceId() . '/' . $api;
+        $url = $this->zoopBase->getUrl($apiVersion) . $this->zoopBase->getMarketplaceId() . '/' . $api;
         try {
             return $this->APIRequest->request('DELETE', $url, $this->zoopBase->getHeaders());
         } catch (ZoopException $e) {
@@ -170,9 +170,9 @@ class APIResource
      *
      * @throws ZoopException
      */
-    public function updateAPI($api, $attributes = [])
+    public function updateAPI($api, $attributes = [], $apiVersion = null)
     {
-        $url = $this->zoopBase->getUrl() . $this->zoopBase->getMarketplaceId() . '/' . $api;
+        $url = $this->zoopBase->getUrl($apiVersion) . $this->zoopBase->getMarketplaceId() . '/' . $api;
         try {
             return $this->APIRequest->request('PUT', $url, $this->zoopBase->getHeaders(), $attributes);
         } catch (ZoopException $e) {
