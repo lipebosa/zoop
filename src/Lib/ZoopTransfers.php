@@ -53,7 +53,7 @@ class ZoopTransfers implements \Zoop\Contracts\ZoopTransfers
 
     public function transferP2P($owner, $receiver, $post = [])
     {
-        $api = "transfers/$owner/to/$receiver";
+        $api = "transfers/${owner}/to/${receiver}";
         $this->APIResource->createAPI($api, $post);
     }
 }

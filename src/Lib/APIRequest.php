@@ -4,29 +4,32 @@ namespace Zoop\Lib;
 
 use Zoop\src\Exceptions\ZoopAuthenticationException;
 use Zoop\src\Exceptions\ZoopObjectNotFound;
+use Exception;
 
-class APIRequest{
-    
+class APIRequest
+{
+
     /**
      * Zoop Base configuration
      *
      * @var object
-    */
+     */
     protected $zoopBase;
 
     /**
      * APIRequest instance
      *
      * @var APIRequest
-    */
+     */
     protected static $instance;
 
     /**
      * Self constructor.
      *
      * @param $base object
-    */
-    public function __construct($base){
+     */
+    public function __construct($base)
+    {
         $this->zoopBase = $base;
     }
 
@@ -36,8 +39,9 @@ class APIRequest{
      * @param $base object
      *
      * @return APIRequest
-    */
-    public static function getInstance($base){
+     */
+    public static function getInstance($base)
+    {
         if (is_null(self::$instance)) {
             self::$instance = new APIRequest($base);
         }
@@ -57,31 +61,31 @@ class APIRequest{
      * @throws ZoopAuthenticationException
      * @throws ZoopObjectNotFound
      */
-    public function request($method, $url, $headers, $data = []){
+    public function request($method, $url, $headers, $data = [])
+    {
         global $zoop_last_api_response_code;
 
         if ($this->zoopBase->getMarketplaceId() == null) {
             throw new ZoopAuthenticationException("Marketplace id não configurada. Verifique seu arquivo de configurações em 'resources/config/config.php'");
         }
 
-//        if ($this->zoopBase->getPublishableKey() == null) {
-//            throw new ZoopAuthenticationException("Publishable key não configurada. Verifique seu arquivo de configurações em 'resources/config/config.php'");
-//        }
+        //        if ($this->zoopBase->getPublishableKey() == null) {
+        //            throw new ZoopAuthenticationException("Publishable key não configurada. Verifique seu arquivo de configurações em 'resources/config/config.php'");
+        //        }
 
         list($response_body, $response_code) = $this->requestWithCURL($method, $url, $headers, $data);
 
         $response = json_decode($response_body);
 
-        if (json_last_error() != JSON_ERROR_NONE) throw new ZoopObjectNotFound($response_body);
-        if ($response_code == 404) throw new ZoopObjectNotFound($response_body);
+        if (json_last_error() != JSON_ERROR_NONE) throw new Exception($response_body);
+        if ($response_code == 404) throw new Exception($response_body);
 
         if (isset($response->errors)) {
 
             if ((gettype($response->errors) != "string") && count(get_object_vars($response->errors)) == 0) {
                 unset($response->errors);
-            }
-            else if ((gettype($response->errors) != "string") && count(get_object_vars($response->errors)) > 0) {
-                $response->errors = (Array) $response->errors;
+            } else if ((gettype($response->errors) != "string") && count(get_object_vars($response->errors)) > 0) {
+                $response->errors = (array) $response->errors;
             }
 
             if (isset($response->errors) && (gettype($response->errors) == "string")) {
@@ -104,11 +108,12 @@ class APIRequest{
      *
      * @return array
      */
-    private function requestWithCURL($method, $url, $headers, $data = Array()){
+    private function requestWithCURL($method, $url, $headers, $data = array())
+    {
         $curl = curl_init();
-        $opts = Array();
+        $opts = array();
 
-        if(strtolower($method) == 'file'){
+        if (strtolower($method) == 'file') {
             $opts[CURLOPT_POST] = 1;
             $opts[CURLOPT_POSTFIELDS] = $data;
         }
@@ -134,7 +139,7 @@ class APIRequest{
 
         $opts[CURLOPT_SSL_VERIFYHOST] = 2;
         $opts[CURLOPT_SSL_VERIFYPEER] = false;
-//        $opts[CURLOPT_CAINFO] = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "data") . DIRECTORY_SEPARATOR . "ca-bundle.crt";
+        //        $opts[CURLOPT_CAINFO] = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "data") . DIRECTORY_SEPARATOR . "ca-bundle.crt";
 
         curl_setopt_array($curl, $opts);
 
@@ -143,7 +148,7 @@ class APIRequest{
 
         curl_close($curl);
 
-        return Array($response_body, $response_code);
+        return array($response_body, $response_code);
     }
 
     /**
@@ -155,16 +160,17 @@ class APIRequest{
      *
      * @return array
      */
-    private function encodeParameters($method, $url, $data = []) {
+    private function encodeParameters($method, $url, $data = [])
+    {
 
         $method = strtolower($method);
 
-        switch($method) {
+        switch ($method) {
             case "get":
             case "delete":
                 $paramsInURL = ZoopUtilities::arrayToParams($data);
                 $data = null;
-                $url = (strpos($url,"?")) ? $url . "&" . $paramsInURL : $url . "?" . $paramsInURL;
+                $url = (strpos($url, "?")) ? $url . "&" . $paramsInURL : $url . "?" . $paramsInURL;
                 break;
             case "post":
             case "put":
