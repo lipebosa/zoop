@@ -2,7 +2,8 @@
 
 namespace Zoop;
 
-class ZoopBase {
+class ZoopBase
+{
 
     /**
      * Config.
@@ -15,7 +16,7 @@ class ZoopBase {
      * ZoopBase instance
      *
      * @var ZoopBase
-    */
+     */
     private static $instance;
 
     /**
@@ -23,7 +24,8 @@ class ZoopBase {
      *
      * @param array $config
      */
-    private function __construct(array $config = []){
+    private function __construct(array $config = [])
+    {
         $this->config = $config;
     }
 
@@ -34,8 +36,9 @@ class ZoopBase {
      *
      * @return ZoopBase
      */
-    public static function getSingleton($config = []){
-        if(is_null(self::$instance)){
+    public static function getSingleton($config = [])
+    {
+        if (is_null(self::$instance)) {
             self::$instance = new ZoopBase($config);
         }
         return self::$instance;
@@ -46,7 +49,8 @@ class ZoopBase {
      *
      * @return string
      */
-    public function getPublishableKey(){
+    public function getPublishableKey()
+    {
         return $this->config['defaults']['publishable_key'];
     }
 
@@ -55,7 +59,8 @@ class ZoopBase {
      *
      * @return string
      */
-    public function getMarketplaceId(){
+    public function getMarketplaceId()
+    {
         return $this->config['defaults']['marketplace_id'];
     }
 
@@ -64,8 +69,15 @@ class ZoopBase {
      *
      * @return string
      */
-    public function getUrl(){
-        return $this->config['defaults']['endpoint'] . '/' . $this->config['defaults']['api_version'] . '/marketplaces/';
+    public function getUrl($apiVersion)
+    {
+        $version = $this->config['defaults']['api_version'];
+
+        if ($apiVersion) {
+            $version = $apiVersion;
+        }
+
+        return $this->config['defaults']['endpoint'] . '/' . $version . '/marketplaces/';
     }
 
     /**
@@ -73,7 +85,8 @@ class ZoopBase {
      *
      * @return array
      */
-    public function getHeaders(){
+    public function getHeaders()
+    {
         return $this->config['headers'];
     }
 }

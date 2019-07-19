@@ -112,9 +112,9 @@ class APIResource
      *
      * @throws ZoopException
      */
-    public function createAPI($api, $attributes = [])
+    public function createAPI($api, $attributes = [], $apiVersion = null)
     {
-        $url = $this->zoopBase->getUrl() . $this->zoopBase->getMarketplaceId() . '/' . $api;
+        $url = $this->zoopBase->getUrl($apiVersion) . $this->zoopBase->getMarketplaceId() . '/' . $api;
         try {
             return $this->APIRequest->request('POST', $url, $this->zoopBase->getHeaders(), $attributes);
         } catch (ZoopException $e) {
