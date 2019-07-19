@@ -37,5 +37,5 @@ interface ZoopTransfers
     /**
      * Peer to peer transfer.
      */
-    public function transferP2P($owner, $receiver);
+    public function transferP2P($owner, $receiver, $post = []);
 }
